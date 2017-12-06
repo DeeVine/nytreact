@@ -4,23 +4,27 @@ import API from "../../utils/API";
 class Articles extends Component {
 
 	state = {
-		items: "",
-		moreitems: ""
+		books: [],
+    title: "testing",
+    author: "",
+    synopsis: ""
 	};
 
 //functions go here
 
-	// componentDidMount() {
- //    	this.loadArticles();
- //  	}
+	componentDidMount() {
+    	this.loadBooks();
+  	}
 
-	// loadBooks = () => {
-	// 	API.getBooks()
-	// 	  .then(res =>
-	// 	    this.setState({ books: res.data, title: "", author: "", synopsis: "" })
-	// 	  )
-	// 	  .catch(err => console.log(err));
-	// };
+	loadBooks = () => {
+		API.getBooks()
+		  .then(res =>
+		    this.setState({ books: res.data, title: "", author: "", synopsis: "" }, function(){
+		    	console.log(this.state);
+		    }),
+		  )
+		  .catch(err => console.log(err));
+	};
 
 	// // Deletes a book from the database with a given id, then reloads books from the db
 	// deleteBook = id => {
@@ -55,7 +59,7 @@ class Articles extends Component {
   render() {
     return (
       <div className="App">
-       
+       	{console.log(this.state)}
         <p className="App-intro">
           This is the Article Page.
         </p>
