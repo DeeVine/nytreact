@@ -26,8 +26,9 @@ class Articles extends Component {
 
 	componentDidMount() {
     	// this.loadBooks();
-    	this.loadArticles();
+
     	this.getArticles3();
+    	this.loadArticles();
   	}
   	
   	getArticles3 = event => {
@@ -49,17 +50,7 @@ class Articles extends Component {
 	loadArticles = () => {
 		API.getArticles()
 		  .then(res =>
-		    this.setState({ articles: res.data, title: "", author: "", synopsis: "" }, function(){
-		    	// console.log(this.state);
-		    }),
-		  )
-		  .catch(err => console.log(err));
-	};
-
-	loadBooks = () => {
-		API.getBooks()
-		  .then(res =>
-		    this.setState({ books: res.data, title: "", author: "", synopsis: "" }, function(){
+		    this.setState({ savedarticles: res.data, title: "", author: "", synopsis: "" }, function(){
 		    	// console.log(this.state);
 		    }),
 		  )
@@ -67,9 +58,9 @@ class Articles extends Component {
 	};
 
 	// Deletes a book from the database with a given id, then reloads books from the db
-	deleteBook = id => {
-		API.deleteBook(id)
-		  .then(res => this.loadBooks())
+	deleteArticle = id => {
+		API.deleteArticle(id)
+		  .then(res => this.loadArticles())
 		  .catch(err => console.log(err));
 	};
 
@@ -81,22 +72,7 @@ class Articles extends Component {
 		});
 	};
 
-	// 	// When the form is submitted, use the API.saveBook method to save the book data
-	// 	// Then reload books from the database
-	handleFormSubmit = event => {
-		event.preventDefault();
-		if (this.state.title && this.state.author) {
-		  API.saveBook({
-		    title: this.state.title,
-		    author: this.state.author,
-		    synopsis: this.state.synopsis
-		  })
-		    .then(res => this.loadBooks())
-		    .catch(err => console.log(err));
-		}
-	};
-
-	handleFormSubmitArticle = (event) => {
+	saveArticle = (event) => {
 
 		console.log(event);
 
@@ -107,7 +83,7 @@ class Articles extends Component {
 		    // url: this.state.author
 		    // date: this.state.synopsis
 		  })
-		    .then(res => this.loadBooks())
+		    .then(res => this.loadArticles())
 		    .catch(err => console.log(err));
 		}
 	};
@@ -160,12 +136,18 @@ class Articles extends Component {
    			{this.state.articles.map((article,i) =>  (
        			<Searcheditems key={i}>
        				<span>{article.headline.main}</span>
-       				<Savebtn value={article.headline.main} onClick={() => this.handleFormSubmitArticle(article.headline.main)}/>
+       				<Savebtn value={article.headline.main} onClick={() => this.saveArticle(article.headline.main)}/>
        			</Searcheditems>
    			))};	
         </Searched>
        	<Saved>
-       		<Saveditems />
+       		{this.state.savedarticles.map((article,i) =>  (
+       			<Saveditems key={i}>
+       				<span>{article.headline}</span>
+       				<span>{article.date}</span>
+       				<Delete value={article.headline} onClick={() => this.deleteArticle(article._id)}/>
+       			</Saveditems>
+   			))};	
        	</Saved>
       </div>
     );
