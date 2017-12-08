@@ -3,28 +3,58 @@ import API from "../../utils/API";
 import Main from "../../components/Main";
 import {Delete} from "../../components/Delete";
 import {Input, Form} from "../../components/Form";
-import {Saved,Saveditems} from "../../components/Saved";
+import {Saved, Savebtn, Saveditems} from "../../components/Saved";
 import {Searched, Searcheditems} from "../../components/Searched";
+import axios from "axios";
 
 class Articles extends Component {
 
 	state = {
-
-		topic: "",
-		startyear: "",
-		endyear:"",
-
+		topic: "food",
+		begindate: "20171201",
+		enddate:"20171205",
 		books: [],
+		articles: [],
+		savedarticles: [],
 	    title: "testing",
 	    author: "",
-	    synopsis: ""
+	    synopsis: "",
+	    testing: ""
 	};
 
 //functions go here
 
 	componentDidMount() {
-    	this.loadBooks();
+    	// this.loadBooks();
+    	this.loadArticles();
+    	this.getArticles3();
   	}
+  	
+  	getArticles3 = event => {
+  		let self = this;
+	    axios({
+	      url:'https://api.nytimes.com/svc/search/v2/articlesearch.json',
+	      params:{ 'api-key': "7ca74794a0a64d579de04b287793ce32",
+	            'q': this.state.topic,
+	            'begin_date': this.state.begindate,
+	            'end_date': this.state.enddate}
+	    })
+	      .then(function(response) {	
+	      // console.log(response);
+	      console.log(response.data.response.docs);
+	      self.setState({articles: response.data.response.docs})
+	    });
+	};
+
+	loadArticles = () => {
+		API.getArticles()
+		  .then(res =>
+		    this.setState({ articles: res.data, title: "", author: "", synopsis: "" }, function(){
+		    	// console.log(this.state);
+		    }),
+		  )
+		  .catch(err => console.log(err));
+	};
 
 	loadBooks = () => {
 		API.getBooks()
@@ -66,16 +96,31 @@ class Articles extends Component {
 		}
 	};
 
+	handleFormSubmitArticle = (event) => {
+
+		console.log(event);
+
+		if (true) {
+			console.log(event)
+		  API.saveArticle({
+		    headline: event
+		    // url: this.state.author
+		    // date: this.state.synopsis
+		  })
+		    .then(res => this.loadBooks())
+		    .catch(err => console.log(err));
+		}
+	};
+
   render() {
     return (
       <div className="App">
        	{console.log(this.state)}
-       	
-
+     	
         <p className="App-intro">
           This is the Article Page.
         </p>
-        <Main />
+  
         <Form>
         	<Input
                 value={this.state.topic}
@@ -84,15 +129,15 @@ class Articles extends Component {
                 placeholder="Topic (required)"
              />
              <Input
-                value={this.state.startyear}
+                value={this.state.begindate}
                 onChange={this.handleInputChange}
-                name="startyear"
+                name="begindate"
                 placeholder="Start Year (required)"
               />
               <Input
-                value={this.state.endyear}
+                value={this.state.enddate}
                 onChange={this.handleInputChange}
-                name="endyear"
+                name="enddate"
                 placeholder="End Year (required)"
               />
               <Input
@@ -108,12 +153,14 @@ class Articles extends Component {
                 placeholder="Author (required)"
               />
               <button className='submit' onClick={this.handleFormSubmit}>Submit</button>
+              <button className='submit' onClick={this.getArticles2}>NYT Submit</button>
+              <button className='submit' onClick={this.getArticles3}>Article3</button>
         </Form>
         <Searched>
-   			{this.state.books.map(book =>  (
-       			<Searcheditems>
-       				<span>{book.title}</span>
-       				<Delete onClick={() => this.deleteBook(book._id)}/>
+   			{this.state.articles.map((article,i) =>  (
+       			<Searcheditems key={i}>
+       				<span>{article.headline.main}</span>
+       				<Savebtn value={article.headline.main} onClick={() => this.handleFormSubmitArticle(article.headline.main)}/>
        			</Searcheditems>
    			))};	
         </Searched>

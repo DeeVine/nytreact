@@ -6,9 +6,3 @@ export const Delete = props => (
   	Delete
   </span>
 );
-
-// const DeleteBtn = props => (
-//   <span className="delete-btn" {...props}>
-//     ✗
-//   </span>
-// );
