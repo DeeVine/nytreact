@@ -13,20 +13,13 @@ class Articles extends Component {
 		topic: "food",
 		begindate: "20171201",
 		enddate:"20171205",
-		books: [],
 		articles: [],
 		savedarticles: [],
-	    title: "testing",
-	    author: "",
-	    synopsis: "",
-	    testing: ""
 	};
 
 //functions go here
 
 	componentDidMount() {
-    	// this.loadBooks();
-
     	this.getArticles3();
     	this.loadArticles();
   	}
@@ -73,11 +66,7 @@ class Articles extends Component {
 	};
 
 	saveArticle = (event) => {
-
-		console.log(event);
-
 		if (true) {
-			console.log(event)
 		  API.saveArticle({
 		    headline: event
 		    // url: this.state.author
@@ -92,11 +81,6 @@ class Articles extends Component {
     return (
       <div className="App">
        	{console.log(this.state)}
-     	
-        <p className="App-intro">
-          This is the Article Page.
-        </p>
-  
         <Form>
         	<Input
                 value={this.state.topic}
@@ -116,21 +100,7 @@ class Articles extends Component {
                 name="enddate"
                 placeholder="End Year (required)"
               />
-              <Input
-                value={this.state.title}
-                onChange={this.handleInputChange}
-                name="title"
-                placeholder="Title (required)"
-             />
-             <Input
-                value={this.state.author}
-                onChange={this.handleInputChange}
-                name="author"
-                placeholder="Author (required)"
-              />
-              <button className='submit' onClick={this.handleFormSubmit}>Submit</button>
-              <button className='submit' onClick={this.getArticles2}>NYT Submit</button>
-              <button className='submit' onClick={this.getArticles3}>Article3</button>
+              <button className='submit' onClick={this.getArticles3}>Search Articles</button>
         </Form>
         <Searched>
    			{this.state.articles.map((article,i) =>  (
@@ -138,7 +108,7 @@ class Articles extends Component {
        				<span>{article.headline.main}</span>
        				<Savebtn value={article.headline.main} onClick={() => this.saveArticle(article.headline.main)}/>
        			</Searcheditems>
-   			))};	
+   			))}	
         </Searched>
        	<Saved>
        		{this.state.savedarticles.map((article,i) =>  (
@@ -147,7 +117,7 @@ class Articles extends Component {
        				<span>{article.date}</span>
        				<Delete value={article.headline} onClick={() => this.deleteArticle(article._id)}/>
        			</Saveditems>
-   			))};	
+   			))}	
        	</Saved>
       </div>
     );
