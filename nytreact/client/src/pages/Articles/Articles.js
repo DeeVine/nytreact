@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import API from "../../utils/API";
-import Main from "../../components/Main";
+
 import {Delete} from "../../components/Delete";
 import {Input, Form} from "../../components/Form";
 import {Saved, Savebtn, Saveditems} from "../../components/Saved";
@@ -20,11 +20,11 @@ class Articles extends Component {
 //functions go here
 
 	componentDidMount() {
-    	this.getArticles3();
+    	this.getArticles();
     	this.loadArticles();
   	}
   	
-  	getArticles3 = event => {
+  	getArticles = event => {
   		let self = this;
 	    axios({
 	      url:'https://api.nytimes.com/svc/search/v2/articlesearch.json',
@@ -65,11 +65,11 @@ class Articles extends Component {
 		});
 	};
 
-	saveArticle = (event) => {
+	saveArticle = (headline, url) => {
 		if (true) {
 		  API.saveArticle({
-		    headline: event
-		    // url: this.state.author
+		    headline: headline,
+		    url: url
 		    // date: this.state.synopsis
 		  })
 		    .then(res => this.loadArticles())
@@ -106,7 +106,7 @@ class Articles extends Component {
    			{this.state.articles.map((article,i) =>  (
        			<Searcheditems key={i}>
        				<span>{article.headline.main}</span>
-       				<Savebtn value={article.headline.main} onClick={() => this.saveArticle(article.headline.main)}/>
+       				<Savebtn value={article.headline.main} onClick={() => this.saveArticle(article.headline.main, article.web_url)}/>
        			</Searcheditems>
    			))}	
         </Searched>
